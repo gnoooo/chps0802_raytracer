@@ -16,26 +16,49 @@ Consignes :
 ---
 
 ## Prérequis
-- G++
-- CMake
+- G++ (>= 9)
+- CMake (>= 3.18)
 - Make
+- CUDA Toolkit (pour `v3_cuda`)
+- GPU NVIDIA compatible (architecture configurée dans `v3_cuda/CMakeLists.txt` : `sm_90` par défaut pour GH200 — adapter si besoin)
 
 ## Setup
 
-Nous pouvons créer les makefiles et compiler manuellement chaque versions du projet :
+### Compilation manuelle d'une version
 
-1. Récupération du repo
-  ```bash
-  git clone https://gitlab.com/gnoooo/chps0802_raytracer
-  cd chps0802_raytracer
-  ```
-2. Makefile et compilation
-  ```bash
-  cmake -S vX/ -B vX/build
-  make -C vX/build
-  ./vX/raytracer_cpu
-  ```
+```bash
+git clone https://gitlab.com/gnoooo/chps0802_raytracer
+cd chps0802_raytracer
 
-Ou bien exécuter le script Bash ci-dessous pour automatiquement tout lancer :
+# Remplacer vX par v1, v2, v3 ou v3_cuda
+cmake -S vX/ -B vX/build
+make -C vX/build
+./vX/build/raytracer_cpu   # ou raytracer_gpu pour v3_cuda
+```
 
-TODO
+### Benchmark CPU vs GPU (v3 / v3_cuda)
+
+Le script `benchmark.sh` compile les deux versions, les exécute et affiche le speedup automatiquement :
+
+```bash
+./benchmark.sh
+```
+
+Option `--skip-build` pour sauter la compilation si les binaires sont déjà à jour :
+
+```bash
+./benchmark.sh --skip-build
+```
+
+Exemple de sortie :
+
+```
+
+ Résultats du benchmark
+  Temps CPU   : 8342.17 ms
+  Temps GPU   : 48.63 ms
+  Speedup     : 171.56x
+```
+
+Les images rendues sont écrites dans `output/v3/output.ppm` (CPU) et `output/v3/output_gpu.ppm` (GPU).
+

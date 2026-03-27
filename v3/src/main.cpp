@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 #include "../include/vec3.hpp"
 #include "../include/ray.hpp"
 #include "../include/hittable_list.hpp"
@@ -84,6 +85,8 @@ int main() {
     std::ofstream out(output_file);
     out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
+    auto t0 = std::chrono::high_resolution_clock::now();
+
     for (int j = image_height - 1; j >= 0; --j) {
         if (j % 100 == 0) std::cerr << "\rScanlines restantes : " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
@@ -95,6 +98,10 @@ int main() {
             write_color(out, pixel_color);
         }
     }
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+    std::cout << "Temps CPU  : " << ms << " ms\n";
 
     out.close();
     std::cerr << "Terminé ! Fichier : " << output_file << "\n";
