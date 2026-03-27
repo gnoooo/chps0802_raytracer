@@ -16,3 +16,17 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # GPU : seul main.cu (vec3/ray/camera sont maintenant header-only)
 # sphere.cpp et hittable_list.cpp ne sont pas nécessaires pour le rendu GPU
 add_executable(raytracer_gpu src/main.cu)
+
+# Tests unitaires
+enable_testing()
+
+add_executable(test_gpu tests/test_gpu.cu)
+
+add_test(NAME test_gpu COMMAND test_gpu)
+
+# make run_tests (depuis v3_cuda/build)
+add_custom_target(run_tests
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+    DEPENDS test_gpu
+    COMMENT "Lancement des tests unitaires v3 CUDA")
+

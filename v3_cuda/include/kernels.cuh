@@ -47,7 +47,6 @@ struct HitRecord {
 
 // world_hit
 // Mélange de Sphere::hit() et HittableList::hit() de la v3 CPU
-
 __device__ inline bool world_hit(const Ray& r, double t_min, double t_max, const SphereGPU* spheres, int n, HitRecord& rec)
 {
     HitRecord tmp;

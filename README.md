@@ -62,3 +62,53 @@ Exemple de sortie :
 
 Les images rendues sont écrites dans `output/v3/output.ppm` (CPU) et `output/v3/output_gpu.ppm` (GPU).
 
+## Tests unitaires
+
+Les tests couvrent : Vec3, Ray, Camera, Sphere::hit, HittableList, LambertColor, ConstantColor, Metal (CPU) et les mêmes primitives côté device CUDA avec des kernels `<<<1,1>>>`.
+
+### v3 CPU
+
+```bash
+# Compilation (depuis la racine du repo)
+cmake -S v3/ -B v3/build
+make -C v3/build test_cpu
+
+# Exécution directe
+./v3/build/test_cpu
+
+# Via CTest
+ctest --test-dir v3/build --output-on-failure
+
+# Via la cible make dédiée
+make -C v3/build run_tests
+```
+
+### v3 CUDA
+
+```bash
+cmake -S v3_cuda/ -B v3_cuda/build
+make -C v3_cuda/build test_gpu
+
+./v3_cuda/build/test_gpu
+
+ctest --test-dir v3_cuda/build --output-on-failure
+
+make -C v3_cuda/build run_tests
+```
+
+Exemple de sortie (CPU) :
+
+```
+=== Tests unitaires v3 CPU ===
+
+[ Vec3 ]
+  PASS : operator+
+  ...
+[ Sphere::hit ]
+  PASS : hit (rayon frontal)
+  PASS : t = 1.0 (face avant)
+  ...
+  PASS : 46
+  Tous les tests sont passes !
+```
+
