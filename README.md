@@ -55,9 +55,9 @@ Exemple de sortie :
 ```
 
  Résultats du benchmark
-  Temps CPU   : 8342.17 ms
-  Temps GPU   : 48.63 ms
-  Speedup     : 171.56x
+  Temps CPU   : 455.90 ms
+  Temps GPU   : 0.18 ms
+  Speedup     : 2518.46x
 ```
 
 Les images rendues sont écrites dans `output/v3/output.ppm` (CPU) et `output/v3/output_gpu.ppm` (GPU).

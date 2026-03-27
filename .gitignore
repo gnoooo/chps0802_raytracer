@@ -5,7 +5,6 @@ CMakeFiles/
 
 v*/build/*
 output/*/*.ppm
+*.ppm
 
 chps0802_project/
-
-*.ppm
