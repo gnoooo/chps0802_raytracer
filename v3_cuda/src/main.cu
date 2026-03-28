@@ -1,6 +1,7 @@
 #include <cuda_runtime.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <memory>
 #include <vector>
 #include "../include/camera.hpp"
@@ -61,11 +62,21 @@ __global__ void render_kernel(unsigned int* fb, int image_width, int image_heigh
 
 // main (calqué sur v3)
 // Seul changement : la double boucle de rendu est remplacée par un kernel
-int main() {
+int main(int argc, char* argv[]) {
     // Paramètres de l'image
-    const int image_width  = 1080;
-    const int image_height = 1920;
-    const char* output_file = "output/v3/output_gpu.ppm";
+    int image_width  = 1080;
+    int image_height = 1920;
+
+    if (argc == 3) {
+        image_width  = std::stoi(argv[1]);
+        image_height = std::stoi(argv[2]);
+    } else if (argc != 1) {
+        std::cerr << "Usage: " << argv[0] << " [width height]\n";
+        return 1;
+    }
+
+    std::string output_file = "output/v3_cuda/output_"
+        + std::to_string(image_width) + "x" + std::to_string(image_height) + ".ppm";
 
     // Scène
     // Note : on utilise SphereGPU au lieu de shared_ptr<Sphere>
@@ -125,8 +136,11 @@ int main() {
     std::vector<unsigned int> h_fb((size_t)image_width * image_height);
     cudaMemcpy(h_fb.data(), d_fb, (size_t)image_width * image_height * sizeof(unsigned int), cudaMemcpyDeviceToHost);
 
-    // Écriture 
     std::ofstream out(output_file);
+    if (!out) {
+        std::cerr << "Impossible d'ouvrir le fichier de sortie : " << output_file << "\n";
+        return 1;
+    }
     out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     for (int j = 0; j < image_height; ++j) {
         if (j % 100 == 0) std::cerr << "\rScanlines écrites : " << j << ' ' << std::flush;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <memory>
 #include <vector>
 #include <algorithm>
@@ -52,11 +53,21 @@ Color ray_color(const Ray& r, const HittableList& world, const std::vector<Point
     return local;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     // Paramètres de l'image
-    const int image_width  = 1080;
-    const int image_height = 1920;
-    const char* output_file = "output/v3/output.ppm";
+    int image_width  = 1080;
+    int image_height = 1920;
+
+    if (argc == 3) {
+        image_width  = std::stoi(argv[1]);
+        image_height = std::stoi(argv[2]);
+    } else if (argc != 1) {
+        std::cerr << "Usage: " << argv[0] << " [width height]\n";
+        return 1;
+    }
+
+    std::string output_file = "output/v3/output_"
+        + std::to_string(image_width) + "x" + std::to_string(image_height) + ".ppm";
 
     // Scène
     HittableList world;
@@ -83,6 +94,10 @@ int main() {
 
     // Rendu
     std::ofstream out(output_file);
+    if (!out) {
+        std::cerr << "Impossible d'ouvrir le fichier de sortie : " << output_file << "\n";
+        return 1;
+    }
     out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     auto t0 = std::chrono::high_resolution_clock::now();
