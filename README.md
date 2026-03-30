@@ -44,23 +44,52 @@ Le script `benchmark.sh` compile les deux versions, les exécute et affiche le s
 ./benchmark.sh
 ```
 
-Option `--skip-build` pour sauter la compilation si les binaires sont déjà à jour :
+Options disponibles (combinables) :
+
+| Option | Description |
+|---|---|
+| `--skip-build` | Saute la compilation si les binaires sont déjà à jour |
+| `--multi-res` | Teste plusieurs résolutions et affiche un tableau comparatif |
 
 ```bash
 ./benchmark.sh --skip-build
+./benchmark.sh --multi-res
+./benchmark.sh --skip-build --multi-res
 ```
 
-Exemple de sortie :
+Exemple de sortie (mode standard) :
 
 ```
-
  Résultats du benchmark
-  Temps CPU   : 455.90 ms
-  Temps GPU   : 0.18 ms
-  Speedup     : 2518.46x
+  Temps CPU :     455.90 ms
+  Temps GPU :       0.18 ms
+  Speedup   : 2518.46x
 ```
 
-Les images rendues sont écrites dans `output/v3/output.ppm` (CPU) et `output/v3/output_gpu.ppm` (GPU).
+Exemple de sortie (mode `--multi-res`) :
+
+```
+Benchmark multi-résolution
+Résolution       CPU (ms)     GPU (ms)    Speedup
+-------------------------------------------------
+270x480             12.34         0.08     154.25x
+540x960             49.80         0.12     415.00x
+1080x1920          455.90         0.18    2532.78x
+2160x3840         1823.60         0.64    2849.38x
+```
+
+Les images rendues sont écrites dans `output/v3/output_<width>x<height>.ppm` (CPU) et `output/v3_cuda/output_<width>x<height>.ppm` (GPU).
+
+#### Résolution personnalisée
+
+Les binaires acceptent directement une résolution en argument :
+
+```bash
+./v3/build/raytracer_cpu 1920 1080          # rendu HD paysage
+./v3_cuda/build/raytracer_gpu 3840 2160     # rendu 4K
+```
+
+Sans argument, la résolution par défaut `1080×1920` (portrait) est utilisée.
 
 ## Tests unitaires
 
