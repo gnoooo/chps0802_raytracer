@@ -8,23 +8,6 @@
 #include "../include/kernels.cuh"
 
 // Adaptation GPU
-//
-// Les classes Material, HittableList et Sphere de la v3 utilisent des shared_ptr et des méthodes virtuelles
-// deux mécanismes qui ne fonctionnent pas en code device CUDA (pas de vtable, pas d'allocateur CPU)
-//
-// Les types GPU (SphereGPU, LightGPU, HitRecord) et les fonctions device
-// (world_hit, ray_color_gpu) sont définis dans kernels.cuh afin d'être
-// partagés avec les tests unitaires (test_gpu.cu).
-
-
-
-// Kernel CUDA : un thread par pixel (remplace la double boucle for de main())
-//
-// Shared memory : chaque bloc charge spheres + lights une fois depuis la
-// global memory -> tous ses threads relisent depuis le cache L1 partagé
-//
-// Accès coalescent : fb[j*W + i], i varie sur l'axe rapide -> les 32 threads
-// d'un warp écrivent 128 octets contigus (donc une transaction mémoire par warp)
 
 __global__ void render_kernel(unsigned int* fb, int image_width, int image_height, const SphereGPU* d_spheres, int ns, const LightGPU*  d_lights,  int nl)
 {
